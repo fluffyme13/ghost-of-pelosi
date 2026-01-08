@@ -112,7 +112,7 @@ if trades_data:
 
         # Action Buttons
         btn_col1, btn_col2 = st.columns(2)
-        if btn_col1.button("Bulk Scan On Insiders in Table"):
+        if btn_col1.button("Bulk Scan Table Content"):
             unique_wallets = buys_df['proxyWallet'].unique().tolist()
             with st.status(f"Scanning {len(unique_wallets)} wallets...") as status:
                 forensics = asyncio.run(run_bulk_scan(unique_wallets))
