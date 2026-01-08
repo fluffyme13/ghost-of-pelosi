@@ -21,7 +21,7 @@ with st.sidebar:
     st.divider()
     st.info("The Forensic Scanner at the bottom uses async logic to scan wallet histories in parallel.")
 
-# 3. Backend Logic: Fetching
+#backend
 @st.cache_data(ttl=300)
 def get_insider_data(min_spend, trade_limit):
     url = f"{API_BASE}/trades"
