@@ -74,7 +74,7 @@ if trades_data:
     if not buys_df.empty:
         search_col1, search_col2 = st.columns(2)
         with search_col1:
-            selected_whale = st.selectbox("Quick-Select Insider from Table:", options=[None] + list(buys_df['proxyWallet'].unique()))
+            selected_whale = st.selectbox("Quick-Select Account from Table:", options=[None] + list(buys_df['proxyWallet'].unique()))
         with search_col2:
             manual_search = st.text_input("OR Paste Custom Wallet Address:")
 
