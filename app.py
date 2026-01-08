@@ -50,7 +50,7 @@ if trades_data:
         col2.metric("Avg Buy", f"${buys_df['Total Spend'].mean():,.2f}")
         col3.metric("Scanned Volume", f"${buys_df['Total Spend'].sum():,.2f}")
         
-        st.subheader(f"Buys Above ${threshold} Threshold {'matching ' + market_query if market_query else ''}")
+        st.subheader(f"Recent Insider Buys > ${threshold} {'matching ' + market_query if market_query else ''}")
         display_df = buys_df[['timestamp', 'proxyWallet', 'title', 'outcome', 'price', 'Total Spend']].copy()
         display_df['timestamp'] = pd.to_datetime(display_df['timestamp'], unit='s').dt.strftime('%Y-%m-%d %H:%M:%S')
         display_df['price'] = display_df['price'].apply(lambda x: f"{float(x):.2%}")
