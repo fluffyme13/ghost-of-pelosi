@@ -5,9 +5,9 @@ import pandas as pd
 # 1. API Configuration
 API_BASE = "https://data-api.polymarket.com"
 
-st.set_page_config(page_title="Polymarket Insider Tracker", layout="wide")
-st.title("Polymarket Insider Tracker")
-st.markdown("Market moves often precede big insider buys. Track large insider trades on Polymarket in real-time!")
+st.set_page_config(page_title="Ghost of Pelosi 🏴‍☠️", layout="wide")
+st.title("Ghost of Pelosi 🏴‍☠️")
+st.markdown("Welcome to the Ghost of Pelosi! Market moves often precede big insider buys. Track large insider trades on Polymarket in real-time!")
 
 # 2. Sidebar Controls
 with st.sidebar:
