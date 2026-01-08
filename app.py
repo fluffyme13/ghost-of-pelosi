@@ -9,7 +9,6 @@ from datetime import datetime
 API_BASE = "https://data-api.polymarket.com"
 
 st.set_page_config(page_title="Ghost of Pelosi 🏴‍☠️", layout="wide")
-st.title("Ghost of Pelosi 🏴‍☠️")
 
 # 2. Sidebar Controls
 with st.sidebar:
@@ -74,7 +73,6 @@ else:
 st.divider()
 st.header("Account Analysis")
 
-# Re-filter for forensics if data exists
 if trades_data:
     df = pd.DataFrame(trades_data)
     df['Total Spend'] = df['price'].astype(float) * df['size'].astype(float)
