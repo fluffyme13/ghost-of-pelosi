@@ -109,8 +109,10 @@ if trades_data:
                 for _, row in buys_df.iterrows():
                     addr = row['proxyWallet']
                     age, mkts = forensics.get(addr, (0, 0))
-                    # Suspicion Score Calculation
-                    score = (row['Total Spend'] / (age + 0.5)) * (1 / (mkts if mkts > 0 else 1))
+                    # Suspicion Score Calculation with price factor
+                    price = float(row['price'])
+                    price_factor = (0.5 / price) if price > 0 else 1
+                    score = (row['Total Spend'] / (age + 0.5)) * (1 / (mkts if mkts > 0 else 1)) * price_factor
                     # Format age with hours/minutes if decimal
                     if age < 1:
                         hours = int(age * 24)
@@ -118,7 +120,8 @@ if trades_data:
                         age_str = f"{age}d ({hours}h {minutes}m)"
                     else:
                         age_str = f"{age}d"
-                    scored_list.append({"Score": round(score, 2), "Wallet": addr, "Age": age_str, "Mkts": mkts, "Market": row['title'], "Outcome": row['outcome'], "Spend": row['Total Spend']})
+                    price_pct = f"{price:.2%}"
+                    scored_list.append({"Score": round(score, 2), "Wallet": addr, "Age": age_str, "Mkts": mkts, "Market": row['title'], "Outcome": row['outcome'], "Price": price_pct, "Spend": row['Total Spend']})
                 status.update(label="Scan Complete!", state="complete")
                 
                 scan_res_df = pd.DataFrame(scored_list).sort_values("Score", ascending=False)
