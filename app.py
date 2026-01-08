@@ -5,18 +5,15 @@ import httpx
 import asyncio
 from datetime import datetime
 
-# 1. API Configuration
 API_BASE = "https://data-api.polymarket.com"
 
 st.set_page_config(page_title="Ghost of Pelosi 🏴‍☠️", layout="wide")
 
-# 2. Sidebar Controls
 with st.sidebar:
     st.header("Search Filters")
     threshold = st.number_input("Insider Threshold (USD)", min_value=1000, value=50000, step=1000)
     limit = st.slider("Recent Trades to Scan", 10, 1000, 200) # Increased limit for better filtering
     
-    # NEW: Market Filter
     st.subheader("Targeted Markets")
     market_query = st.text_input("Filter by Market Keyword (e.g. Trump, Fed, Crypto)", "")
     
@@ -32,7 +29,6 @@ def get_insider_data(min_spend, trade_limit):
     response = requests.get(url, params=params)
     return response.json() if response.status_code == 200 else []
 
-# 4. Main Dashboard Display
 with st.spinner("Fetching insider activity..."):
     trades_data = get_insider_data(threshold, limit)
 
@@ -41,23 +37,19 @@ if trades_data:
     df['Total Spend'] = df['price'].astype(float) * df['size'].astype(float)
     buys_df = df[df['side'] == 'BUY'].copy()
     
-    # APPLY MARKET FILTER
     if market_query:
         buys_df = buys_df[buys_df['title'].str.contains(market_query, case=False, na=False)]
     
     if not buys_df.empty:
-        # Sorting
         if sort_by == "Total Spend": buys_df = buys_df.sort_values('Total Spend', ascending=False)
         elif sort_by == "Market Name": buys_df = buys_df.sort_values('title', ascending=True)
         else: buys_df = buys_df.sort_values('outcome', ascending=True)
 
-        # Metrics
         col1, col2, col3 = st.columns(3)
         col1.metric("Unique Insiders", len(buys_df['proxyWallet'].unique()))
         col2.metric("Avg Buy", f"${buys_df['Total Spend'].mean():,.2f}")
         col3.metric("Scanned Volume", f"${buys_df['Total Spend'].sum():,.2f}")
         
-        # Display Insider Table
         st.subheader(f"Recent Insider Buys > ${threshold} {'matching ' + market_query if market_query else ''}")
         display_df = buys_df[['timestamp', 'proxyWallet', 'title', 'outcome', 'price', 'Total Spend']].copy()
         display_df['timestamp'] = pd.to_datetime(display_df['timestamp'], unit='s').dt.strftime('%Y-%m-%d %H:%M:%S')
@@ -69,7 +61,6 @@ if trades_data:
 else: 
     st.info("No data found at this threshold.")
 
-# --- 5. FORENSIC SCANNER & SEARCH SECTION ---
 st.divider()
 st.header("Account Analysis")
 
@@ -89,7 +80,6 @@ if trades_data:
 
         target_wallet = manual_search if manual_search else selected_whale
 
-        # --- Async Forensic Engine ---
         async def fetch_forensics(client, address, semaphore):
             async with semaphore:
                 try:
@@ -110,7 +100,6 @@ if trades_data:
                 tasks = [fetch_forensics(client, w, semaphore) for w in wallets]
                 return dict(await asyncio.gather(*tasks))
 
-        # Action Buttons
         btn_col1, btn_col2 = st.columns(2)
         if btn_col1.button("Bulk Scan Table Content"):
             unique_wallets = buys_df['proxyWallet'].unique().tolist()
@@ -142,7 +131,6 @@ if trades_data:
                     st.write(f"### Current Portfolio for {target_wallet}")
                     pos_df = pd.DataFrame(pos_res.json())
                     if not pos_df.empty:
-                        # Filter to only show positions with non-zero value
                         pos_df['currentValue'] = pd.to_numeric(pos_df['currentValue'], errors='coerce')
                         pos_df = pos_df[pos_df['currentValue'] > 0]
                         if not pos_df.empty:
